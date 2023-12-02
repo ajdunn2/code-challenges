@@ -6,12 +6,11 @@ Game 3: 8 green, 6 blue, 20 red; 5 blue, 4 red, 13 green; 5 green, 1 red
 Game 4: 1 green, 3 red, 6 blue; 3 green, 6 red; 3 green, 15 blue, 14 red
 Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green`;
 
-let lines = text.split(/\r?\n/);
-
 const MAX_RED = 12;
 const MAX_GREEN = 13;
 const MAX_BLUE = 14;
 let sumOfIds = 0;
+let powerOfMins = 0;
 
 for (var i = 0; i < lines.length; i++) {
     let possible = true;
@@ -25,16 +24,23 @@ for (var i = 0; i < lines.length; i++) {
                 return me.map(i => i.trim())
             }
         );
+
+    // Part 1
     if (checkIfPossible(setToCheck)) {
         sumOfIds += gameNum;
     }
+
+    // Part 2    
+    powerOfMins += checkMinPossible(setToCheck)
 }
 
-console.log("Total: " + sumOfIds);
+console.log("Total Sum of IDs: " + sumOfIds);
 
+console.log("Total Sum of Power of Sets " + powerOfMins);
+
+// What is the sum of the IDs of those games?
 function checkIfPossible(arrayVal) {
     let thisPossible = true;
-
     arrayVal.forEach((x) => {
         x.forEach((y) => {
             let redFound = y.endsWith(" red");
@@ -64,4 +70,41 @@ function checkIfPossible(arrayVal) {
         })
     })
     return thisPossible;
+}
+
+// What is the sum of the power of these sets?
+function checkMinPossible(arrayVal) {
+    let minRedPossible = 1;
+    let minGreenPossible = 1;
+    let minBluePossible = 1;
+
+    arrayVal.forEach((x) => {
+        x.forEach((y) => {
+            let redFound = y.endsWith(" red");
+            if (redFound) {
+                let redCount = parseInt(y.split(" ")[0]);
+                if (redCount > minRedPossible) {
+                    minRedPossible = redCount;
+                }
+            }
+            
+            let greenFound = y.endsWith(" green");
+            if (greenFound) {
+                let greenCount = parseInt(y.split(" ")[0]);
+                if (greenCount > minGreenPossible) {
+                    minGreenPossible = greenCount;
+                }
+            }
+            
+            let blueFound = y.endsWith(" blue");
+            if (blueFound) {
+                let redCount = parseInt(y.split(" ")[0]);
+                if (redCount > minBluePossible) {
+                    minBluePossible = redCount;
+                }
+            }
+            
+        })
+    })
+    return minRedPossible * minBluePossible * minGreenPossible;
 }
